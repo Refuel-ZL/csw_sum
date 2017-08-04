@@ -1,0 +1,32 @@
+{
+    "name": "csw-sum",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "debug": "~2.6.8",
+        "ejs": "^2.5.7",
+        "eslint-plugin-import": "^2.7.0",
+        "fs": "^0.0.1-security",
+        "koa": "^2.3.0",
+        "koa-bodyparser": "^4.2.0",
+        "koa-convert": "^1.2.0",
+        "koa-json": "^2.0.2",
+        "koa-logger": "^3.0.0",
+        "koa-onerror": "^3.1.0",
+        "koa-router": "^7.2.1",
+        "koa-static": "^3.0.0",
+        "koa-views": "^6.0.2",
+        "log4js": "^2.3.2",
+        "moment-timezone": "^0.5.13",
+        "mssql": "^4.0.4",
+        "nunjucks": "~3.0.0"
+    },
+    "devDependencies": {
+        "babel-eslint": "^7.2.3",
+        "eslint": "^4.3.0",
+        "eslint-plugin-react": "^7.1.0"
+    }
+}
