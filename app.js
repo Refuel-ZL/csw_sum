@@ -1,23 +1,26 @@
-const Koa = require('koa')
-const Router = require('koa-router')
+/*
+ * @Author: ZhaoLei 
+ * @Date: 2017-08-07 14:09:56 
+ * @Last Modified by: ZhaoLei
+ * @Last Modified time: 2017-08-10 14:17:21
+ */
+const Koa = require("koa")
+const Router = require("koa-router")
 const app = new Koa()
 const router = new Router()
 
-const views = require('koa-views')
-const co = require('co')
-const convert = require('koa-convert')
-const json = require('koa-json')
-const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')
+const views = require("koa-views")
+const json = require("koa-json")
+const onerror = require("koa-onerror")
+const bodyparser = require("koa-bodyparser")
 
 const logUtil = require("./models/log4js/log_utils")
-const debug = require('debug')('koa2:server')
-const path = require('path')
+const path = require("path")
 
-const config = require('./config')
-const routes = require('./routes')
+const config = require("./config")
+const routes = require("./routes")
 
-const port = process.env.PORT || config.port
+config.port = process.env.PORT || config.port
 
 // error handler
 onerror(app)
@@ -25,11 +28,11 @@ onerror(app)
 // middlewares
 app.use(bodyparser())
     .use(json())
-    .use(require('koa-static')(__dirname + '/public'))
-    .use(views(path.join(__dirname, '/views'), {
-        options: { settings: { views: path.join(__dirname, 'views') } },
-        map: { 'ejs': 'ejs' },
-        extension: 'ejs'
+    .use(require("koa-static")(__dirname + "/public"))
+    .use(views(path.join(__dirname, "/views"), {
+        options: { settings: { views: path.join(__dirname, "views") } },
+        map: { "ejs": "ejs" },
+        extension: "ejs"
     }))
     .use(router.routes())
     .use(router.allowedMethods())
@@ -56,21 +59,22 @@ app.use(async(ctx, next) => {
         logUtil.logError(ctx, error, ms)
     }
 })
-router.get('/', async(ctx, next) => {
-    // ctx.body = 'Hello World'
+router.get("/", async(ctx, next) => {
+    // ctx.body = "Hello World"
     ctx.state = {
-        title: 'Koa2'
+        title: "Koa2"
     }
-    await ctx.render('index', ctx.state)
+    await ctx.render("index", ctx.state)
 })
 
 routes(router)
-app.on('error', function(err, ctx) {
+app.on("error", function(err, ctx) {
     console.log(err)
     logUtil.logError(ctx, err)
-        // logger.error('server error', err, ctx)
+        // logger.error("server error", err, ctx)
 })
 
 module.exports = app.listen(config.port, () => {
     console.log(`Listening on http://localhost:${config.port}`)
+    require("./services/timer")()
 })
