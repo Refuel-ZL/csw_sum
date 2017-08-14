@@ -4,9 +4,10 @@ const fs = require('fs')
 let isexist = void 0
 
 let LogPath = path.resolve(__dirname, '../../logs/log.log')
-isexist = fs.existsSync('../../logs')
+let LogFolder = path.resolve(__dirname, "../../logs")
+isexist = fs.existsSync(LogFolder)
 if (!isexist) {
-    fs.mkdirSync('../../logs', '0777')
+    fs.mkdirSync(LogFolder, '0777')
 }
 module.exports = {
     'appenders': {

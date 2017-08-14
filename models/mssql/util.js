@@ -1,43 +1,52 @@
-"use strict"
+/*
+ * @Author: ZhaoLei 
+ * @Date: 2017-08-14 14:24:22 
+ * @Last Modified by:   ZhaoLei 
+ * @Last Modified time: 2017-08-14 14:24:22 
+ */
 
-const mssql = require("mssql")
-const log4util = require("../log4js/log_utils")
+'use strict'
 
-const config = require("./config").config
-const Sqlutil = function() {
-    // this.select()
+var mssql = require('mssql')
+const log4util = require('../log4js/log_utils')
+
+var config = require('./config').config
+const Sqlutil = function() {}
+Sqlutil.prototype.init = function(server, user, password, database) {
+    config.user = user
+    config.password = password
+    config.server = server
+    config.database = database
 }
-Sqlutil.prototype.select = async function(sql) {
-    try {
-        let pool = await new mssql.ConnectionPool(config).connect()
-        var result = await pool.request().query(sql)
-        return result.recordset
-    } catch (err) {
-        log4util.writeErr(err.message)
-        return err
-    }
 
-
-}
-Sqlutil.prototype.insert = async function(sql) {
-    try {
-        let pool = await new mssql.ConnectionPool({
-            user: "sa",
-            password: "123",
-            server: "127.0.0.1", // You can use "localhost\\instance" to connect to named instance 
-            database: "zlt-monitors",
-            pool: {
-                max: 10,
-                min: 0,
-                idleTimeoutMillis: 10000
+Sqlutil.prototype.query = async function(sql) {
+    return new Promise(function(resolve, reject) {
+        var connection = null
+        try {
+            connection = new mssql.ConnectionPool(config, function(err) {
+                if (err) {
+                    connection.close()
+                    reject(err)
+                } else {
+                    let sqlReq = connection.request()
+                    sqlReq.query(sql, function(error, result) {
+                        connection.close()
+                        if (error) {
+                            reject(error)
+                        } else {
+                            resolve(result)
+                        }
+                    })
+                }
+            })
+        } catch (error) {
+            if (connection) {
+                connection.close()
             }
-        }).connect()
-        var result = await pool.request().query(sql)
-        return result
-    } catch (err) {
-        log4util.writeErr(err.message)
-        return err
-    }
+            reject(error)
+        }
+
+    })
 }
 
 
